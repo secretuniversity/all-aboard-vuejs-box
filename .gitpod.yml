@@ -1,0 +1,91 @@
+image:
+  file: .gitpod.Dockerfile
+
+# List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
+github:
+  prebuilds:
+    # enable for the master/default branch (defaults to true)
+    mater: true
+    # enable for all branches in this repo (defaults to false)
+    branches: false
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: false
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: false
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to true)
+    addComment: false
+    # add a "Review in Gitpod" button to pull requests (defaults to false)
+    addBadge: false
+    # add a label once the prebuild is ready to pull requests (defaults to false)
+    addLabel: prebuilt-in-gitpod
+
+tasks:
+  - name: Secret Box Tutorial
+    init: |
+      echo "Install Vue"
+      yarn global add @vue/cli
+      echo "Install frontend dependencies"
+      cd app
+      yarn install
+      cd $GITPOD_REPO_ROOT
+    command: |
+      cd app
+      echo "Setup Vite Environment variable"
+      #
+      # Need to unset the VITE env vars so that the new values are read when app/.env is updated
+      #
+      echo "Setup Vite Environment variables"
+      unset LOCALSECRET_LCD
+      e="LOCALSECRET_LCD=$(gp url 1317)"
+      eval $(gp env -e $e)
+      unset VITE_SECRET_BOX_CODE
+      unset VITE_SECRET_BOX_ADDRESS
+      unset VITE_SECRET_BOX_HASH
+      unset VITE_LOCALSECRET_LCD
+
+  - name: LocalSecret Workspace
+    command: |
+      unset LOCALSECRET_LCD
+      unset VITE_LOCALSECRET_LCD
+      echo "Ready to setup LocalSecret workspace"
+    openMode: tab-after
+
+  - name: Secret Contract Workspace
+    command: |
+      sudo chown gitpod:gitpod /home/gitpod/.bash_profile
+      unset LOCALSECRET_LCD
+      unset VITE_LOCALSECRET_LCD
+      e="LOCALSECRET_LCD=$(gp url 1317)"
+      eval $(gp env -e $e)
+      echo "Ready to setup Secret Contract development environment"
+    openMode: tab-after
+
+vscode:
+  extensions:
+    - serayuzgur.crates
+    - bungcip.better-toml
+    - Vue.volar
+    - rust-lang.rust-analyzer
+
+# List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
+
+ports:
+  - name: LocalSecret RPC
+    port: 26657
+    onOpen: ignore
+    visibility: public
+  - name: LocalSecret gRPC-Web
+    port: 9090-9091
+    onOpen: ignore
+    visibility: public
+  - name: Secret Faucet
+    port: 5000
+    onOpen: ignore
+    visibility: public
+  - name: LocalSecret LCD
+    port: 1317
+    onOpen: ignore
+    visibility: public
+  - name: Secret Box Preview
+    port: 5173
+    onOpen: open-preview
