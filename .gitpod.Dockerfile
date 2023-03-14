@@ -13,8 +13,7 @@ RUN apt-get update && \
     nano \
     less \
     jq \
-    clang \
-    binaryen
+    clang
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* tmp/*
 
@@ -26,21 +25,6 @@ RUN apt-get install -yq nodejs
 
 ### Yarn ###
 RUN npm install --global yarn
-
-## Docker ##
-#RUN apt-get install -yq --no-install-recommends \
-#    ca-certificates \
-#    gnupg \
-#    lsb-release
-#RUN mkdir -m 0755 -p /etc/apt/keyrings
-#RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-#RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-#  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-#RUN apt-get update
-
-#RUN apt-get install -yq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 ### Gitpod user ###
 

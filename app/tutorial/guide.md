@@ -1,8 +1,8 @@
-# All Aboard Secret Box Tutorial
+# All Aboard Secret Box
+
 
 ## Getting Started
-Welcome to the _All Aboard_ secret box.
-#####
+
 This box will walk you through setting up a development environment (_in a sandbox)_ so you can start working with secret contracts!
 #####
 ![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)
@@ -13,9 +13,11 @@ You should have the following three terminal tabs open in your sandbox environme
 2. `LocalSecret Workspace` - this is where you'll launch the local Secret Network blockchain, getting to see it start and produce blocks
 3. `Secret Contract Workspace` - as you go throught the tutorial, use this terminal to enter the commands to install, setup and interact with your secret contract
 
-We will use **Linux/WSL** as the environment for the installation of requirements in this secret box. 
+We will use **Linux** as the environment for the installation of requirements in this secret box. 
 
-> If you'd like to setup your development environment on your laptop (instead of using a developer sandbox), follow the "Getting Started" steps [here](https://docs.scrt.network/secret-network-documentation/development/getting-started/setting-up-your-environment), which also covers Linux/WSL, Windows and Mac/OS installations. The official Secret Network guide includes:
+> If you'd like to setup your development environment locally (instead of using a developer sandbox), follow the _Getting Started_ steps [here](https://docs.scrt.network/secret-network-documentation/development/getting-started/setting-up-your-environment). 
+>
+> The official Secret Network guide includes:
 > 
 > - Setting Up Your Environment
 > - Compile and Deploy
@@ -30,6 +32,7 @@ To follow along with the guide, we will be using:
 
 - `make` (secret contract compilation)
 - `rust` and `cargo` (Rust compilation and package management)
+- `docker` (to run the developer Secret Network blockchain)
 
 ### Install Make
 
@@ -68,11 +71,33 @@ cargo install cargo-generate --features vendored-openssl
 
 [Docker](https://docs.docker.com/get-docker) is an open platform for developing, shipping, and running applications.
 
-> Follow the instructions for installing in a Linux/WSL environment.
+#### Setup the Repository
+
+First, add Docker's GPG key (_used to encrypt/decrypt and sign messages_):
+
+```bash
+sudo mkdir -m 0755 -p /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
+
+Setup `apt` so it knows where to get the Docker installation files:
+
+```bash
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" |\
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+Update the `apt` package index and install Docker:
+
+```bash
+sudo apt-get update
+sudo apt-get install -yq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
 
 ### Pull LocalSecret Docker Image
 
-Now that you have docker installed, pull the `LocalSecret` docker image.
+Now that you have docker installed, you can pull the `LocalSecret` docker image.
 
 ```bash
 docker pull ghcr.io/scrtlabs/localsecret:v1.8.0
@@ -151,7 +176,7 @@ The project's `Makefile` defines how to compile the Rust contract to Web Assembl
 ```bash
 make build
 ```
-> The Makefile has a `compress-wasm` target that is invoked after the contract is compiled which takes care of compressing the wasm and produces a `contract.wasm.gz` file.
+> The Makefile has a `compress-wasm` target that's invoked after the contract is compiled and produces a `contract.wasm.gz` file. This is the compressed secret contract code that you'll store on the `LocalSecret` blockchain.
 
 ### Run the Unit Tests
 
@@ -163,15 +188,15 @@ make test
 
 ## Storing the Contract
 
-In order to store the compiled `contract.wasm.gz` to `LocalSecret`, we need to use a wallet funded with some SCRT. Transactions that modify contract state require a bit of gas in the form of the native SCRT token.
+In order to store the contract on `LocalSecret`, we need to use a wallet funded with some SCRT. Transactions that modify contract state require a bit of gas in the form of the native SCRT token.
 
 > This is `LocalSecret` SCRT, not to be confused with testnet or mainnet secret.
 
 ### Create a Wallet
 
-`LocalSecret` comes with a set of [pre-defined wallets](https://docs.scrt.network/secret-network-documentation/development/tools-and-libraries/local-secret#accounts) you can use in development. Below, create a key for the pre-defined `a` wallet. 
+`LocalSecret` comes with a set of [pre-defined wallets with mnemonics](https://docs.scrt.network/secret-network-documentation/development/tools-and-libraries/local-secret#accounts) you can use in development. Below, create a key for the pre-defined `a` wallet. 
 
-> We're using the `--recover` flag which will prompt you for the mnemonic for the wallet.
+> We're using the `--recover` flag for an existing wallet, which will prompt you for the mnemonic.
 
 ```bash
 secretcli keys add --recover myWallet
@@ -180,11 +205,10 @@ secretcli keys add --recover myWallet
 Enter the mnemonic when prompted:
 
 ```bash
-> Enter your bip39 mnemonic
 grant rice replace explain federal release fix clever romance raise often wild taxi quarter soccer fiber love must tape steak together observe swap guitar
 ```
 
-If you've created the key successfully, you should see this output:
+If you've created the key successfully, you should see output similar to this:
 
 ```bash
 - name: a
@@ -195,6 +219,8 @@ If you've created the key successfully, you should see this output:
 ```
 
 ### Query the Wallet's Balance
+
+Get the wallet's SCRT balance:
 
 ```bash
 secretcli query bank balances secret1ap26qrlp8mcq2pg6r47w43l0y8zkqm8a450s03 | jq
@@ -219,9 +245,10 @@ The output from the bank balance query should look like this:
 
 ### Upload the Contract
 
-Great! Now that you've got your wallet setup and it has plenty of funds, let's upload the contract code to the blockchain. Secret contracts get deployed to the network with their code and other information recorded. From there they must be created or "instantiated" in order to interact with them. 
+Great! Now that you've got your wallet setup and it has plenty of funds, let's upload the contract code to the blockchain. Secret contracts get deployed to the network with their code and other information recorded (e.g. the code ID, contract hash). 
 
-> This is similar to object-oriented programming languages where you define a "class" (also like a blueprint) and create instances that are known as "objects" that represent real things such as smart contracts :-D.
+
+Upload the contract:
 
 ```bash
 secretcli tx compute store contract.wasm.gz --gas 5000000 --from myWallet
@@ -229,7 +256,13 @@ secretcli tx compute store contract.wasm.gz --gas 5000000 --from myWallet
 
 ### Instantiate the Contract
 
-In order to create a secret contract instance, we send an `instantiate` message, which creates it from the base contract code that's stored on the blockchain.
+After uploading a secret contract, it must be created or "instantiated" in order to interact with it. 
+
+> This is similar to object-oriented programming languages where you define a "class" (like a blueprint) and create instances that are known as "objects" that represent real things such as smart contracts :-D.
+
+To create a secret contract instance, we send an `instantiate` message, which creates it from the base contract code that's stored on the blockchain.
+
+Create the secret contract instance:
 
 ```bash
 secretcli tx compute instantiate 1 '{"count": 1}' --from myWallet --label counterContract -y
@@ -237,15 +270,25 @@ secretcli tx compute instantiate 1 '{"count": 1}' --from myWallet --label counte
 
 ### Running the Application
 
-Now that you've stored and instantiated the counter contract, it's time to get some practice querying and executing transactions!
+Now that you've stored and instantiated the counter contract, it's time to get some practice querying and executing transactions. The fun part!
+
+The counter contract has the following defined messages. We send these messages to the contract as JSON strings using `secretcli`.
+
+1. Query counter - `{"get_count": {}}`
+2. Increment counter - `{"increment {}"}`
+3. Reset counter - `{"reset": {"count": 0}}`
 
 ##### Query Message
+
+###### Get Count
+
+Send the `get_count` query message:
 
 ```bash
 secretcli query compute query secret18vd8fpwxzck93qlwghaj6arh4p7c5n8978vsyg '{"get_count": {}}'
 ```
 
-The output should lool like this:
+The query returns:
 
 ```bash
 {"count": "1"}
@@ -253,27 +296,46 @@ The output should lool like this:
 
 ##### Execute Message
 
+###### Increment
+
+Send the `increment` execute message:
+
 ```bash
 secretcli tx compute execute secret18vd8fpwxzck93qlwghaj6arh4p7c5n8978vsyg '{"increment": {}}' --from myWallet
 ```
 
-Then run the `get_count` message again to see that the counter was incremented:
+Query the counter value again, to verify it was incremented by 1:
+
+```bash
+secretcli query compute query secret18vd8fpwxzck93qlwghaj6arh4p7c5n8978vsyg '{"get_count": {}}'
+```
+
+The query returns:
 
 ```bash
 {"count": "2"}
 ```
 
-Finally, let's send the `reset` message to set the counter back to `0`:
+###### Reset
+
+Finally, let's send the `reset` execute message to set the counter back to `0`:
 
 ```bash
 secretcli tx compute execute secret18vd8fpwxzck93qlwghaj6arh4p7c5n8978vsyg '{"reset": {"count": 0}}' --from myWallet
 ```
 
-Send the `get_count` message one more time:
+Query the counter value again, to verify it was incremented by 1:
+
+```bash
+secretcli query compute query secret18vd8fpwxzck93qlwghaj6arh4p7c5n8978vsyg '{"get_count": {}}'
+```
+
+The query returns:
 
 ```bash
 {"count": "0"}
 ```
+
 
 For more information about using query and execute messages for the counter contract, follow along [here](https://docs.scrt.network/secret-network-documentation/development/getting-started/running-the-application).
 
@@ -286,6 +348,8 @@ We at [Secret University](https://scrt.university) hope you've enjoyed following
 Now that you've successfully learned how to setup your environment, run an instance of `LocalSecret`, and do some basic stuff with secret contracts, it's time to take things a bit further.
 #####
 To learn more about developing secret contracts, follow the _Secret Counter Box_ tutorial [here](https://scrt.university/repositories/secret-box/2/secret-counter). You'll also learn how to connect the frontend DApp to your `LocalSecret` instance to perform contract queries and transactions.
+
+And if you're feeling adventurous, check out this guide to learn how to deploy your secret contract to the [testnet](https://docs.scrt.network/secret-network-documentation/development/getting-started/interacting-with-the-testnet).
 
 ## Further Reading
 
