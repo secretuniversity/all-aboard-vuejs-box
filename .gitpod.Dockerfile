@@ -22,7 +22,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* tmp/*
 RUN dpkg --remove --force-remove-reinstreq libnode-dev
 RUN dpkg --remove --force-remove-reinstreq libnode72:amd64
 RUN curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-RUN apt-get install -yq nodejs npm
+RUN apt-get install -yq nodejs
 
 ### Yarn ###
 RUN npm install --global yarn
