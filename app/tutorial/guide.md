@@ -77,7 +77,7 @@ First, add Docker's GPG key (_used to encrypt/decrypt and sign messages_):
 
 ```bash
 sudo mkdir -m 0755 -p /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 ```
 
 Setup `apt` so it knows where to get the Docker installation files:
