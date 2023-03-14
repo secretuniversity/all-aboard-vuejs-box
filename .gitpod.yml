@@ -42,6 +42,7 @@ tasks:
       unset VITE_SECRET_BOX_ADDRESS
       unset VITE_SECRET_BOX_HASH
       unset VITE_LOCALSECRET_LCD
+      yarn dev
 
   - name: LocalSecret Workspace
     command: |

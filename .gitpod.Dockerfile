@@ -14,11 +14,15 @@ RUN apt-get update && \
     less \
     jq \
     clang \
-    binaryen \
-    nodejs \
-    npm
+    binaryen
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* tmp/*
+
+# Install Nodejs and NPM
+RUN dpkg --remove --force-remove-reinstreq libnode-dev
+RUN dpkg --remove --force-remove-reinstreq libnode72:amd64
+RUN curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+RUN apt-get install -yq nodejs npm
 
 ### Yarn ###
 RUN npm install --global yarn
