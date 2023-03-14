@@ -361,7 +361,7 @@ And if you're feeling adventurous, check out this guide to learn how to deploy y
 
 ## Further Reading
 
-- After going through this tutorial, we encourage you to go through this [Millionaire's Problem](hhttps://docs.scrt.network/secret-network-documentation/development/secret-by-example/millionaires-problem) breakdown for further learning on secret contracts.
+- After going through this tutorial, we encourage you to go through this [Millionaire's Problem](https://docs.scrt.network/secret-network-documentation/development/secret-by-example/millionaires-problem) breakdown for further learning on secret contracts.
 
 - If you're new to the Rust programming language, check out the [Rust Book](https://doc.rust-lang.org/book/) or the [Rustlings](https://github.com/rust-lang/rustlings) course.
 
