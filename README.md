@@ -108,7 +108,43 @@ sudo apt-get install -yq docker-ce docker-ce-cli containerd.io docker-buildx-plu
 Now that you have docker installed, you can pull the `LocalSecret` docker image.
 
 ```bash
-docker pull ghcr.io/scrtlabs/localsecret:v1.8.0
+docker pull ghcr.io/scrtlabs/localsecret:v1.6.0
+```
+
+### Running Localsecret in SGX Mode
+
+To run your localsecret in SGX mode, follow the steps below. For more information, please refer to the [documentation](https://docs.scrt.network/secret-network-documentation/infrastructure/node-runners/testnet/install-sgx).
+
+**Reminder:** If you are using WSL from Windows, you will need to use a version below 22.04, like 20.04.5 LTS, otherwise, you will receive several errors in the next steps.
+
+### Installing the SGX Installation Script
+
+```bash
+  wget https://raw.githubusercontent.com/SecretFoundation/docs/main/docs/node-guides/sgx
+```
+
+### Running the SGX Install Script
+
+```bash
+  sudo bash sgx
+```
+
+### Changing Environment Variables
+
+1. Open the .bashrc file.
+```bash
+  nano ~/.bashrc
+```
+
+2. At the end of the file, add the following line.
+```bash
+export SGX_MODE="SW"
+```
+
+3. use .bashrc as source
+
+```bash
+  source  ~/.bashrc
 ```
 
 ### Run LocalSecret
@@ -116,8 +152,8 @@ docker pull ghcr.io/scrtlabs/localsecret:v1.8.0
 Use the `docker run` command (below) to launch the `LocalSecret` blockchain. Once running, the container gets a name of "localsecret," which you'll reference when deploying a secret contract later in this tutorial.
 
 ```bash
-docker run -it -p 9091:9091 -p 26657:26657 -p 1317:1317 -p 5000:5000 \
-  --name localsecret ghcr.io/scrtlabs/localsecret:v1.8.0
+docker run -it -p 9091:9091 -p 26657:26657 -p 1317:1317 -p 5000:5000 
+  --name localsecret ghcr.io/scrtlabs/localsecret:v1.6.0
 ```
 
 ![](https://i.imgur.com/K0O97Dh.png)
@@ -259,7 +295,7 @@ Great! Now that you've got your wallet setup and it has plenty of funds, let's u
 Upload the contract:
 
 ```bash
-secretcli tx compute store contract.wasm.gz --gas 5000000 --from myWallet
+secretcli tx compute store contract.wasm.gz --gas 5000000 --from myWallet --chain-id secretdev-1
 ```
 
 ### Instantiate the Contract
