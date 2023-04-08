@@ -141,6 +141,12 @@ To run your localsecret in SGX mode, follow the steps below. For more informatio
 export SGX_MODE="SW"
 ```
 
+3. use .bashrc as source
+
+```bash
+  source  ~/.bashrc
+```
+
 ### Run LocalSecret
 
 Use the `docker run` command (below) to launch the `LocalSecret` blockchain. Once running, the container gets a name of "localsecret," which you'll reference when deploying a secret contract later in this tutorial.
