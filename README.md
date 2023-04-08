@@ -152,8 +152,7 @@ export SGX_MODE="SW"
 Use the `docker run` command (below) to launch the `LocalSecret` blockchain. Once running, the container gets a name of "localsecret," which you'll reference when deploying a secret contract later in this tutorial.
 
 ```bash
-docker run -it -p 9091:9091 -p 26657:26657 -p 1317:1317 -p 5000:5000 
-  --name localsecret ghcr.io/scrtlabs/localsecret:v1.6.0
+docker run -it -p 9091:9091 -p 26657:26657 -p 1317:1317 -p 5000:5000 --name localsecret ghcr.io/scrtlabs/localsecret:v1.6.0
 ```
 
 ![](https://i.imgur.com/K0O97Dh.png)
