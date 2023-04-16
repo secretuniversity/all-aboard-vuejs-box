@@ -108,7 +108,7 @@ sudo apt-get install -yq docker-ce docker-ce-cli containerd.io docker-buildx-plu
 Now that you have docker installed, you can pull the `LocalSecret` docker image.
 
 ```bash
-docker pull ghcr.io/scrtlabs/localsecret:v1.6.0
+docker pull ghcr.io/scrtlabs/localsecret:v1.8.0
 ```
 
 ### Running Localsecret in SGX Mode
@@ -152,7 +152,7 @@ export SGX_MODE="SW"
 Use the `docker run` command (below) to launch the `LocalSecret` blockchain. Once running, the container gets a name of "localsecret," which you'll reference when deploying a secret contract later in this tutorial.
 
 ```bash
-docker run -it -p 9091:9091 -p 26657:26657 -p 1317:1317 -p 5000:5000 --name localsecret ghcr.io/scrtlabs/localsecret:v1.6.0
+docker run -it -p 9091:9091 -p 26657:26657 -p 1317:1317 -p 5000:5000 --name localsecret ghcr.io/scrtlabs/localsecret:v1.8.0
 ```
 
 ![](https://i.imgur.com/K0O97Dh.png)
@@ -205,10 +205,10 @@ Now that you have `LocalSecret` running, it's time to create a secret contract!
 
 ### Generate the Project
 
-We'll use the basic `counter` contract from the [Secret University github repo](https://github.com/secretuniversity/secret-template-cw1). This is the standard counter contract template, and has examples of querying and modifying a secret contract's state.
+We'll use the basic `counter` contract from the [Secret University github repo](https://github.com/secretuniversity/secret-template). This is the standard counter contract template, and has examples of querying and modifying a secret contract's state.
 
 ```bash
-cargo generate --git https://github.com/secretuniversity/secret-template-cw1.git --name my-counter-contract
+cargo generate --git https://github.com/secretuniversity/secret-template.git --name my-counter-contract
 cd my-counter-contract
 ```
 
@@ -427,4 +427,4 @@ And if you're feeling adventurous, check out this guide to learn how to deploy y
 - Alex Sinplea [Github](https://github.com/sinplea) - frontend development
 - Jeff SecretMickey - [Telegram](https://t.me/secretMickey) Lead UI/UX design
 - Kate Unakatu [Telegram](https://t.me/unakatu) - UI/UX design and graphics (Loreum Ipsem and Geek.pics founding team member)
-
+- WalkingFrames - All Aboard artwork
