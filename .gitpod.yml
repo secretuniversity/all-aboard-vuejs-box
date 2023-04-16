@@ -20,6 +20,22 @@ github:
     addLabel: prebuilt-in-gitpod
 
 tasks:
+  - name: LocalSecret Workspace
+    command: |
+      unset LOCALSECRET_LCD
+      unset VITE_LOCALSECRET_LCD
+      echo "Ready to setup LocalSecret workspace"
+
+  - name: Secret Contract Workspace
+    command: |
+      sudo chown gitpod:gitpod /home/gitpod/.bash_profile
+      unset LOCALSECRET_LCD
+      unset VITE_LOCALSECRET_LCD
+      e="LOCALSECRET_LCD=$(gp url 1317)"
+      eval $(gp env -e $e)
+      echo "Ready to setup Secret Contract development environment"
+    openMode: tab-after
+
   - name: Secret Box Tutorial
     init: |
       echo "Install Vue"
@@ -43,22 +59,6 @@ tasks:
       unset VITE_SECRET_BOX_HASH
       unset VITE_LOCALSECRET_LCD
       yarn dev
-
-  - name: LocalSecret Workspace
-    command: |
-      unset LOCALSECRET_LCD
-      unset VITE_LOCALSECRET_LCD
-      echo "Ready to setup LocalSecret workspace"
-    openMode: tab-after
-
-  - name: Secret Contract Workspace
-    command: |
-      sudo chown gitpod:gitpod /home/gitpod/.bash_profile
-      unset LOCALSECRET_LCD
-      unset VITE_LOCALSECRET_LCD
-      e="LOCALSECRET_LCD=$(gp url 1317)"
-      eval $(gp env -e $e)
-      echo "Ready to setup Secret Contract development environment"
     openMode: tab-after
 
 vscode:
