@@ -17,6 +17,7 @@ We will use **Linux** as the environment for the installation of requirements in
 
 > If you'd like to setup your development environment locally (instead of using a developer sandbox), follow the _Getting Started_ steps [here](https://docs.scrt.network/secret-network-documentation/development/getting-started/setting-up-your-environment). 
 >
+> ###
 > The official Secret Network guide includes:
 > 
 > - Setting Up Your Environment
@@ -162,10 +163,10 @@ Now that you have `LocalSecret` running, it's time to create a secret contract!
 
 ### Generate the Project
 
-We'll use the basic `counter` contract from the [Secret University github repo](https://github.com/secretuniversity/secret-template-cw1). This is the standard counter contract template, and has examples of querying and modifying a secret contract's state.
+We'll use the basic `counter` contract from the [Secret University github repo](https://github.com/secretuniversity/secret-template). This is the standard counter contract template, and has examples of querying and modifying a secret contract's state.
 
 ```bash
-cargo generate --git https://github.com/secretuniversity/secret-template-cw1.git --name my-counter-contract
+cargo generate --git https://github.com/secretuniversity/secret-template.git --name my-counter-contract
 cd my-counter-contract
 ```
 
